@@ -83,9 +83,8 @@ resource "aws_security_group_rule" "SecurityGroup_webServer_outbound_tcp3000" {
   to_port   = 3000
 
   # アウトバウンドルールのソースを設定
-  # CIDR で指定
-  # 0.0.0.0/0 は、どの IP アドレスからでも接続を許可するという意味
-  cidr_blocks = ["0.0.0.0/0"]
+  # app サーバー用のセキュリティグループからの接続を許可
+  source_security_group_id = aws_security_group.SecurityGroup_appServer.id
 }
 
 # app サーバー用のセキュリティグループ
