@@ -30,7 +30,7 @@ resource "aws_vpc" "vpc" {
 
 # サブネットの設定 - パブリックサブネット1
 # resource "aws_subnet" "識別名"
-resource "aws_subnet" "publicSubnet_1" {
+resource "aws_subnet" "publicSubnet_1a" {
 
   # VPC の ID を設定
   vpc_id = aws_vpc.vpc.id
@@ -55,7 +55,7 @@ resource "aws_subnet" "publicSubnet_1" {
 
 # サブネットの設定 - パブリックサブネット2
 # resource "aws_subnet" "識別名"
-resource "aws_subnet" "publicSubnet_2" {
+resource "aws_subnet" "publicSubnet_1c" {
 
   # VPC の ID を設定
   vpc_id = aws_vpc.vpc.id
@@ -80,7 +80,7 @@ resource "aws_subnet" "publicSubnet_2" {
 
 # サブネットの設定 - プライベートサブネット1
 # resource "aws_subnet" "識別名"
-resource "aws_subnet" "privateSubnet_1" {
+resource "aws_subnet" "privateSubnet_1a" {
 
   # VPC の ID を設定
   vpc_id = aws_vpc.vpc.id
@@ -101,7 +101,7 @@ resource "aws_subnet" "privateSubnet_1" {
 
 # サブネットの設定 - プライベートサブネット2
 # resource "aws_subnet" "識別名"
-resource "aws_subnet" "privateSubnet_2" {
+resource "aws_subnet" "privateSubnet_1c" {
 
   # VPC の ID を設定
   vpc_id = aws_vpc.vpc.id
@@ -118,4 +118,84 @@ resource "aws_subnet" "privateSubnet_2" {
     Project = var.projectName
     Env     = var.environment
   }
+}
+
+# ルートテーブルの設定 - パブリックルートテーブル
+# resource "aws_route_table" "識別名"
+resource "aws_route_table" "publicRouteTable" {
+
+  # VPC の ID を設定
+  vpc_id = aws_vpc.vpc.id
+
+  # ルートテーブルのタグを設定
+  tags = {
+    Name    = "${var.projectName}-${var.environment}-publicRouteTable"
+    Project = var.projectName
+    Env     = var.environment
+    Type    = "public"
+  }
+}
+
+# ルートテーブルの設定 - プライベートルートテーブル
+# resource "aws_route_table" "識別名"
+resource "aws_route_table" "privateRouteTable" {
+
+  # VPC の ID を設定
+  vpc_id = aws_vpc.vpc.id
+
+  # ルートテーブルのタグを設定
+  tags = {
+    Name    = "${var.projectName}-${var.environment}-privateRouteTable"
+    Project = var.projectName
+    Env     = var.environment
+    Type    = "private"
+  }
+}
+
+# ルートテーブルの紐付け(ルートテーブルアソシエーション) - AZ 1a のパブリックルートテーブル
+# resource "aws_route_table_association" "識別名"
+resource "aws_route_table_association" "publicRouteTableAssociation_1a" {
+
+  # ルートテーブルの ID を設定
+  route_table_id = aws_route_table.publicRouteTable.id
+
+  # サブネットの ID を設定
+  subnet_id = aws_subnet.publicSubnet_1a.id
+
+}
+
+# ルートテーブルの紐付け(ルートテーブルアソシエーション) - AZ 1c のパブリックルートテーブル
+# resource "aws_route_table_association" "識別名"
+resource "aws_route_table_association" "publicRouteTableAssociation_1c" {
+
+  # ルートテーブルの ID を設定
+  route_table_id = aws_route_table.publicRouteTable.id
+
+  # サブネットの ID を設定
+  subnet_id = aws_subnet.publicSubnet_1c.id
+
+}
+
+# ルートテーブルの紐付け(ルートテーブルアソシエーション) - AZ 1a のプライベートルートテーブル
+# resource "aws_route_table_association" "識別名"
+resource "aws_route_table_association" "privateRouteTableAssociation_1a" {
+
+  # ルートテーブルの ID を設定
+  route_table_id = aws_route_table.privateRouteTable.id
+
+  # サブネットの ID を設定
+  subnet_id = aws_subnet.privateSubnet_1a.id
+
+}
+
+# ルートテーブルの紐付け(ルートテーブルアソシエーション) - AZ 1c のプライベートルートテーブル
+# resource "aws_route_table_association" "識別名"
+resource "aws_route_table_association" "privateRouteTableAssociation_1c" {
+
+  # ルートテーブルの ID を設定
+  route_table_id = aws_route_table.privateRouteTable.id
+
+  # サブネットの ID を設定
+  subnet_id = aws_subnet.privateSubnet_1c.id
+
 }
