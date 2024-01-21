@@ -14,4 +14,4 @@ Terraform で AWS のリソースを作成してみました。
 以下の教材をベースにソースコードを作成しました  
 
 AWS と Terraformで実現するInfrastructure as Code:  
-https://www.udemy.com/course/iac-with-terraform/
+[https://www.udemy.com/course/iac-with-terraform/](https://www.udemy.com/course/iac-with-terraform/)
