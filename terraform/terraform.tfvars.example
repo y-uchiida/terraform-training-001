@@ -1,0 +1,4 @@
+# tf ファイルで定義した変数に対して、値を設定する
+
+projectName = "TastyLog"
+environment = "development"
