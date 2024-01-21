@@ -199,3 +199,33 @@ resource "aws_route_table_association" "privateRouteTableAssociation_1c" {
   subnet_id = aws_subnet.privateSubnet_1c.id
 
 }
+
+# インターネットゲートウェイの設定
+# resource "aws_internet_gateway" "識別名"
+resource "aws_internet_gateway" "internetGateway" {
+
+  # VPC の ID を設定
+  vpc_id = aws_vpc.vpc.id
+
+  # インターネットゲートウェイのタグを設定
+  tags = {
+    Name    = "${var.projectName}-${var.environment}-internetGateway"
+    Project = var.projectName
+    Env     = var.environment
+  }
+}
+
+# ルートテーブルの設定 - インターネットゲートウェイ
+# resource "aws_route" "識別名"
+resource "aws_route" "internetGateway_publicRoute" {
+
+  # ルートテーブルの ID を設定
+  route_table_id = aws_route_table.publicRouteTable.id
+
+  # ルートの宛先(接続を許可するアドレス範囲)を設定
+  # 0.0.0.0/0 は、全ての IP アドレスを表す
+  destination_cidr_block = "0.0.0.0/0"
+
+  # インターネットゲートウェイの ID を設定
+  gateway_id = aws_internet_gateway.internetGateway.id
+}
