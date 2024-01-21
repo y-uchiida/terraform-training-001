@@ -218,3 +218,46 @@ resource "aws_security_group_rule" "SecurityGroup_operationManagement_outbound_h
   # CIDR で指定
   cidr_blocks = ["0.0.0.0/0"]
 }
+
+# データベースサーバー用のセキュリティグループ
+# resource "aws_security_group" "識別名"
+resource "aws_security_group" "SecurityGroup_databaseServer" {
+
+  # セキュリティグループの名前を設定
+  name = "${var.projectName}-${var.environment}-SecurityGroup_databaseServer"
+
+  # セキュリティグループの説明を設定
+  description = "security group for database servers"
+
+  # VPC の ID を設定
+  vpc_id = aws_vpc.vpc.id
+
+  # セキュリティグループのタグを設定
+  tags = {
+    Name    = "${var.projectName}-${var.environment}-SecurityGroup_databaseServer"
+    Project = var.projectName
+    Env     = var.environment
+  }
+}
+
+# データベースサーバー用のセキュリティグループのインバウンドルールを設定 - mysql/tcp3306
+# resource "aws_security_group_rule" "識別名"
+resource "aws_security_group_rule" "SecurityGroup_databaseServer_inbound_mysql_tcp3306" {
+
+  # 接続するセキュリティグループのIDを設定
+  security_group_id = aws_security_group.SecurityGroup_databaseServer.id
+
+  # インバウンドルールのタイプを設定
+  type = "ingress"
+
+  # インバウンドルールのプロトコルを設定
+  protocol = "tcp"
+
+  # インバウンドルールのポート番号を設定
+  from_port = 3306
+  to_port   = 3306
+
+  # インバウンドルールのソースを設定
+  # app サーバー用のセキュリティグループからの接続を許可
+  source_security_group_id = aws_security_group.SecurityGroup_appServer.id
+}
