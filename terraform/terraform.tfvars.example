@@ -1,4 +1,12 @@
 # tf ファイルで定義した変数に対して、値を設定する
+# awsProfile は、~/.aws/credentials に定義したプロファイル名を指定する
+# awsProfile が空の場合、デフォルトのプロファイルが使用される
+# 例えば ~/.aws/credentials に以下のように定義されている場合、
+# awsProfile には、"nirneege-terraform" を指定する
+# [nirneege-terraform]
+# aws_access_key_id = AKIAJ...
+# aws_secret_access_key = 1ZJ0...
 
 projectName = "TastyLog"
 environment = "development"
+awsProfile  = "nirneege-terraform"

@@ -15,7 +15,7 @@ terraform {
 
 # AWS プロバイダーの設定
 provider "aws" {
-  profile = "terraform"
+  profile = var.awsProfile
   region  = "ap-northeast-1"
 }
 
@@ -29,4 +29,10 @@ variable "projectName" {
 variable "environment" {
   type    = string
   default = "dev"
+}
+
+# 使用するAWSプロファイル名の設定
+variable "awsProfile" {
+  type    = string
+  default = "default"
 }
