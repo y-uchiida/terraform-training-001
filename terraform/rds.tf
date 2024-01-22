@@ -39,3 +39,10 @@ resource "aws_db_subnet_group" "mySqlStandAloneSubnetGroup" {
     Env     = var.environment
   }
 }
+
+# パスワードとして利用するためのランダム文字列生成
+# 長さは16文字、特殊文字は含めない
+resource "random_string" "dbPassword" {
+  length  = 16
+  special = false
+}
