@@ -15,3 +15,12 @@ resource "aws_db_parameter_group" "mySqlStandAloneParameterGroup" {
     value = "utf8mb4"
   }
 }
+
+# オプショングループの設定
+resource "aws_db_option_group" "mySqlStandAloneOptionGroup" {
+  name                     = "${var.projectName}-${var.environment}-mysql-standalone-option-group"
+  engine_name              = "mysql"
+  major_engine_version     = "8.0"
+  option_group_description = "mySqlStandAloneOptionGroup"
+}
+
