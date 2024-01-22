@@ -24,3 +24,18 @@ resource "aws_db_option_group" "mySqlStandAloneOptionGroup" {
   option_group_description = "mySqlStandAloneOptionGroup"
 }
 
+# サブネットグループの設定
+# 作成済みのプライベートサブネットを束ねる
+resource "aws_db_subnet_group" "mySqlStandAloneSubnetGroup" {
+  name = "${var.projectName}-${var.environment}-mysql-standalone-subnet-group"
+  subnet_ids = [
+    aws_subnet.privateSubnet_1a.id,
+    aws_subnet.privateSubnet_1c.id
+  ]
+
+  tags = {
+    Name    = "${var.projectName}-${var.environment}-mysql-standalone-subnet-group"
+    Project = var.projectName
+    Env     = var.environment
+  }
+}
