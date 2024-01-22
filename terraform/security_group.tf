@@ -108,6 +108,94 @@ resource "aws_security_group" "SecurityGroup_appServer" {
   }
 }
 
+# app サーバー用のセキュリティグループのインバウンドルールを設定 - tcp3000
+# resource "aws_security_group_rule" "識別名"
+resource "aws_security_group_rule" "SecurityGroup_appServer_inbound_tcp3000" {
+
+  # 接続するセキュリティグループのIDを設定
+  security_group_id = aws_security_group.SecurityGroup_appServer.id
+
+  # インバウンドルールのタイプを設定
+  type = "ingress"
+
+  # インバウンドルールのプロトコルを設定
+  protocol = "tcp"
+
+  # インバウンドルールのポート番号を設定
+  from_port = 3000
+  to_port   = 3000
+
+  # インバウンドルールのソースを設定
+  # Web サーバー用のセキュリティグループからの接続を許可
+  source_security_group_id = aws_security_group.SecurityGroup_webServer.id
+}
+
+# app サーバー用のセキュリティグループのアウトバウンドルールを設定 - http
+# resource "aws_security_group_rule" "識別名"
+resource "aws_security_group_rule" "SecurityGroup_appServer_outbound_http" {
+
+  # 接続するセキュリティグループのIDを設定
+  security_group_id = aws_security_group.SecurityGroup_appServer.id
+
+  # アウトバウンドルールのタイプを設定
+  type = "egress"
+
+  # アウトバウンドルールのプロトコルを設定
+  protocol = "tcp"
+
+  # アウトバウンドルールのポート番号を設定
+  from_port = 80
+  to_port   = 80
+
+  # アウトバウンドルールのソースを設定
+  # プレフィックスリストを利用して、AWS のサービスに対する接続を許可
+  prefix_list_ids = [data.aws_prefix_list.s3_prefixList.id]
+}
+
+# app サーバー用のセキュリティグループのアウトバウンドルールを設定 - https
+# resource "aws_security_group_rule" "識別名"
+resource "aws_security_group_rule" "SecurityGroup_appServer_outbound_https" {
+
+  # 接続するセキュリティグループのIDを設定
+  security_group_id = aws_security_group.SecurityGroup_appServer.id
+
+  # アウトバウンドルールのタイプを設定
+  type = "egress"
+
+  # アウトバウンドルールのプロトコルを設定
+  protocol = "tcp"
+
+  # アウトバウンドルールのポート番号を設定
+  from_port = 443
+  to_port   = 443
+
+  # アウトバウンドルールのソースを設定
+  # プレフィックスリストを利用して、AWS のサービスに対する接続を許可
+  prefix_list_ids = [data.aws_prefix_list.s3_prefixList.id]
+}
+
+# app サーバー用のセキュリティグループのアウトバウンドルールを設定 - mysql/tcp3306
+# resource "aws_security_group_rule" "識別名"
+resource "aws_security_group_rule" "SecurityGroup_appServer_outbound_mysql_tcp3306" {
+
+  # 接続するセキュリティグループのIDを設定
+  security_group_id = aws_security_group.SecurityGroup_appServer.id
+
+  # アウトバウンドルールのタイプを設定
+  type = "egress"
+
+  # アウトバウンドルールのプロトコルを設定
+  protocol = "tcp"
+
+  # アウトバウンドルールのポート番号を設定
+  from_port = 3306
+  to_port   = 3306
+
+  # アウトバウンドルールのソースを設定
+  # データベースサーバー用のセキュリティグループへの接続を許可
+  source_security_group_id = aws_security_group.SecurityGroup_databaseServer.id
+}
+
 # 運用管理用のセキュリティグループ
 # resource "aws_security_group" "識別名"
 resource "aws_security_group" "SecurityGroup_operationManagement" {
