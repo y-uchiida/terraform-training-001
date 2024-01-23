@@ -64,7 +64,7 @@ resource "aws_db_instance" "mySqlStandAlone" {
 
   # DB名はプロジェクト名と環境名を組み合わせて作成
   # ハイフンが利用できないため、アンダースコアを利用する
-  name = "${var.projectName}_${var.environment}"
+  db_name = "${var.projectName}_${var.environment}"
 
   instance_class = "db.t3.micro"
 
