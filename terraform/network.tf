@@ -46,7 +46,7 @@ resource "aws_subnet" "publicSubnet_1a" {
 
   # サブネットのタグを設定
   tags = {
-    Name    = "${var.projectName}-${var.environment}-publicSubnet-1"
+    Name    = "${var.projectName}-${var.environment}-publicSubnet-1a"
     Project = var.projectName
     Env     = var.environment
     Type    = "public"
@@ -71,7 +71,7 @@ resource "aws_subnet" "publicSubnet_1c" {
 
   # サブネットのタグを設定
   tags = {
-    Name    = "${var.projectName}-${var.environment}-publicSubnet-2"
+    Name    = "${var.projectName}-${var.environment}-publicSubnet-1c"
     Project = var.projectName
     Env     = var.environment
     Type    = "public"
@@ -93,7 +93,7 @@ resource "aws_subnet" "privateSubnet_1a" {
 
   # サブネットのタグを設定
   tags = {
-    Name    = "${var.projectName}-${var.environment}-privateSubnet-1"
+    Name    = "${var.projectName}-${var.environment}-privateSubnet-1a"
     Project = var.projectName
     Env     = var.environment
   }
@@ -114,7 +114,7 @@ resource "aws_subnet" "privateSubnet_1c" {
 
   # サブネットのタグを設定
   tags = {
-    Name    = "${var.projectName}-${var.environment}-privateSubnet-2"
+    Name    = "${var.projectName}-${var.environment}-privateSubnet-1c"
     Project = var.projectName
     Env     = var.environment
   }
