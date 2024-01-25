@@ -1,3 +1,15 @@
+# tfstate ファイルを保存するための S3 バケットを作成するための Playbook です。
+# この Playbook で作成された S3 バケットは、Terraform のバックエンドとして使用します。
+# ARN を控えて、Terraform のバックエンドに設定してください。
+# すでに S3 バケットが存在する場合は、タグの追加を行います。
+# この Playbook を実行する前に、以下の環境変数を設定してください。
+# これらは、.envrc ファイルから設定しておくことを推奨します。
+# - IDENTIFIER
+# - AWS_PROFILE
+# - AWS_REGION
+# - PROJECT_NAME
+#
+
 ---
 - hosts: localhost
   gather_facts: False
