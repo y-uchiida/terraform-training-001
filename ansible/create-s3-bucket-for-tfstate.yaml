@@ -2,10 +2,14 @@
 # この Playbook で作成された S3 バケットは、Terraform のバックエンドとして使用します。
 # ARN を控えて、Terraform のバックエンドに設定してください。
 # すでに S3 バケットが存在する場合は、タグの追加を行います。
+# また、AWS_IAM_USER の環境変数に設定された IAM ユーザーに、S3 バケットへのアクセス権限を付与します。
+# それ以外のユーザーには、S3 バケットへのアクセス権限を付与しません。
 # この Playbook を実行する前に、以下の環境変数を設定してください。
 # これらは、.envrc ファイルから設定しておくことを推奨します。
 # - IDENTIFIER
 # - AWS_PROFILE
+# - AWS_ACCOUNT_ID
+# - AWS_IAM_USER
 # - AWS_REGION
 # - PROJECT_NAME
 #
@@ -23,6 +27,11 @@
       fail:
         msg: "Environment variable AWS_PROFILE is not set"
       when: lookup('env', 'AWS_PROFILE') is not defined
+
+    - name: Check if environment variable AWS_ACCOUNT_ID is set
+      fail:
+        msg: "Environment variable AWS_ACCOUNT_ID is not set"
+      when: lookup('env', 'AWS_ACCOUNT_ID') is not defined
 
     - name: Check if environment variable AWS_REGION is set
       fail:
@@ -57,9 +66,23 @@
         profile: "{{ lookup('env', 'AWS_PROFILE') | default('default', true) }}"
       register: s3_bucket
 
-    - name: Debug s3_bucket output
-      debug:
-        var: s3_bucket
+    - name: Set S3 bucket policy
+      amazon.aws.s3_bucket:
+        name: "{{ lookup('env', 'PROJECT_NAME') }}-tfstate-bucket-{{ lookup('env', 'AWS_REGION') }}-{{ lookup('env', 'IDENTIFIER') }}"
+        state: present
+        region: "{{ lookup('env', 'AWS_REGION') }}"
+        profile: "{{ lookup('env', 'AWS_PROFILE') | default('default', true) }}"
+        policy:
+          Version: '2012-10-17'
+          Statement:
+            - Sid: AllowUser
+              Effect: Allow
+              Principal:
+                AWS: "arn:aws:iam::{{ lookup('env', 'AWS_ACCOUNT_ID') }}:user/{{ lookup('env', 'AWS_IAM_USER') }}"
+              Action: "s3:*"
+              Resource: 
+                - "arn:aws:s3:::{{ lookup('env', 'PROJECT_NAME') }}-tfstate-bucket-{{ lookup('env', 'AWS_REGION') }}-{{ lookup('env', 'IDENTIFIER') }}"
+                - "arn:aws:s3:::{{ lookup('env', 'PROJECT_NAME') }}-tfstate-bucket-{{ lookup('env', 'AWS_REGION') }}-{{ lookup('env', 'IDENTIFIER') }}/*"
 
     - name: Tag the S3 bucket
       amazon.aws.s3_bucket:
