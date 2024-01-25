@@ -1,0 +1,35 @@
+# Usage: direnv allow
+
+# IDENTIFIER: このプロジェクトの識別子
+# S3バケット名などの重複を避けるため、企業名など識別子として用いる文字列を指定する
+export IDENTIFIER=nirneege
+
+# PROJECT_NAME: プロジェクト名
+# プロジェクト名を指定する
+export PROJECT_NAME=terraform-sample-project
+
+# ENVIRONMENT: 環境名
+# 環境名を指定する
+export ENVIRONMENT=development
+
+# AWS_PROFILE: AWSのプロファイル名
+# ./aws/credentials に記載されているプロファイル名を指定する
+# 複数のAWSアカウントを使い分けている場合は、この環境変数で利用するプロファイルを指定する
+export AWS_PROFILE=default
+
+# AWS_IAM_USER: AWSのIAMユーザー名
+# AWSのIAMユーザー名を指定する
+export AWS_IAM_USER=terraform
+
+# AWS_REGION: AWSのリージョン
+# AWSのリージョンを指定する
+export AWS_REGION=ap-northeast-1
+
+# Terraform が自動読み込みする環境変数
+# https://www.terraform.io/docs/commands/environment-variables.html
+export TF_VAR_identifier=$IDENTIFIER
+export TF_VAR_projectName=$PROJECT_NAME
+export TF_VAR_environment=$ENVIRONMENT
+export TF_VAR_awsProfile=$AWS_PROFILE
+export TF_VAR_AWS_IAM_USER=$AWS_IAM_USER
+export TF_VAR_AWS_REGION=$AWS_REGION
