@@ -1,0 +1,68 @@
+---
+- hosts: localhost
+  gather_facts: False
+  tasks:
+    - name: Check if environment variable IDENTIFIER is set
+      fail:
+        msg: "Environment variable IDENTIFIER is not set"
+      when: lookup('env', 'IDENTIFIER') is not defined
+
+    - name: Check if environment variable AWS_PROFILE is set
+      fail:
+        msg: "Environment variable AWS_PROFILE is not set"
+      when: lookup('env', 'AWS_PROFILE') is not defined
+
+    - name: Check if environment variable AWS_REGION is set
+      fail:
+        msg: "Environment variable AWS_REGION is not set"
+      when: lookup('env', 'AWS_REGION') is not defined
+
+    - name: Check if environment variable PROJECT_NAME is set
+      fail:
+        msg: "Environment variable PROJECT_NAME is not set"
+      when: lookup('env', 'PROJECT_NAME') is not defined
+
+    - name: Check if S3 bucket already exists
+      amazon.aws.s3_bucket_info:
+        region: "{{ lookup('env', 'AWS_REGION') }}"
+        profile: "{{ lookup('env', 'AWS_PROFILE') | default('default', true) }}"
+      register: existing_buckets
+
+    - name: Show info if S3 bucket already exists
+      debug:
+        msg:
+          - "S3 bucket {{ bucket_name }} already exists."
+          - "ARN: arn:aws:s3:::{{ bucket_name }}"
+      when: bucket_name in existing_buckets.buckets | map(attribute='name') | list
+      vars:
+        bucket_name: "{{ lookup('env', 'PROJECT_NAME') }}-tfstate-bucket-{{ lookup('env', 'AWS_REGION') }}-{{ lookup('env', 'IDENTIFIER') }}"
+
+    - name: Ensure S3 bucket exists
+      amazon.aws.s3_bucket:
+        name: "{{ lookup('env', 'PROJECT_NAME') }}-tfstate-bucket-{{ lookup('env', 'AWS_REGION') }}-{{ lookup('env', 'IDENTIFIER') }}"
+        state: present
+        region: "{{ lookup('env', 'AWS_REGION') }}"
+        profile: "{{ lookup('env', 'AWS_PROFILE') | default('default', true) }}"
+      register: s3_bucket
+
+    - name: Debug s3_bucket output
+      debug:
+        var: s3_bucket
+
+    - name: Tag the S3 bucket
+      amazon.aws.s3_bucket:
+        name: "{{ s3_bucket.name }}"
+        state: present
+        region: "{{ lookup('env', 'AWS_REGION') }}"
+        profile: "{{ lookup('env', 'AWS_PROFILE') | default('default', true) }}"
+        tags:
+          Name: "{{ lookup('env', 'PROJECT_NAME') }}-tfstate-bucket-{{ lookup('env', 'AWS_REGION') }}-{{ lookup('env', 'IDENTIFIER') }}"
+          Project: "{{ lookup('env', 'PROJECT_NAME') }}"
+
+    - name: Show S3 bucket details
+      debug:
+        msg:
+          - "Created S3 bucket. ARN is bellow:"
+          - "aws:s3:::{{ s3_bucket.name }}"
+          - "{{ s3_bucket }}"
+
