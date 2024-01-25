@@ -8,6 +8,10 @@ Terraform で AWS のリソースを作成してみました。
 - WSL2 Ubuntu20.04
 - Terraform v1.6.6
 - TFLint version 0.38.1
+- direnv 2.21.2
+- AWS CLI 2.15.6
+- Poetry 1.5.1
+- Ansible 2.16.2
 
 ## 参考資料
 
