@@ -7,6 +7,9 @@
 # aws_access_key_id = AKIAJ...
 # aws_secret_access_key = 1ZJ0...
 
-projectName = "TastyLog"
-environment = "development"
-awsProfile  = "nirneege-terraform"
+# .envrc でTF_VAR_ で始まる環境変数を設定しているものは、tfvarsでの設定は不要
+# 共通化できないもの、および上書きしたいものは、ここで設定する
+
+# projectName =　
+# environment = 
+# awsProfile  = 

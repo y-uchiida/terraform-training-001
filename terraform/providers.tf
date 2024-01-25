@@ -8,6 +8,9 @@ terraform {
       source = "hashicorp/aws"
     }
   }
+  # バックエンドの設定
+  # 設定値は .envrcで設定した TF_CLI_ARGS_init を参照する
+  backend "s3" {}
 }
 
 # AWS プロバイダーの設定
