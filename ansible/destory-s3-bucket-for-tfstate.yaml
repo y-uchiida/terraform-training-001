@@ -1,0 +1,47 @@
+# tfstate ファイルを保存するための S3 バケットを削除するための Playbook です。
+# この Playbook は、S3 バケットが存在する場合は削除します。
+# S3 バケット内にオブジェクトが存在する場合は、削除できません。
+# この Playbook を実行する前に、S3 バケット内のオブジェクトを削除してください。
+# また、この Playbook を実行する前に、以下の環境変数を設定してください。
+# これらは、.envrc ファイルから設定しておくことを推奨します。
+# - IDENTIFIER
+# - AWS_PROFILE
+# - AWS_REGION
+# - PROJECT_NAME
+#
+
+---
+- hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Check if environment variable IDENTIFIER is set
+      fail:
+        msg: "Environment variable IDENTIFIER is not set"
+      when: lookup('env', 'IDENTIFIER') is not defined
+
+    - name: Check if environment variable AWS_PROFILE is set
+      fail:
+        msg: "Environment variable AWS_PROFILE is not set"
+      when: lookup('env', 'AWS_PROFILE') is not defined
+
+    - name: Check if environment variable AWS_REGION is set
+      fail:
+        msg: "Environment variable AWS_REGION is not set"
+      when: lookup('env', 'AWS_REGION') is not defined
+
+    - name: Check if environment variable PROJECT_NAME is set
+      fail:
+        msg: "Environment variable PROJECT_NAME is not set"
+      when: lookup('env', 'PROJECT_NAME') is not defined
+
+    - name: Ensure S3 bucket does not exist
+      amazon.aws.s3_bucket:
+        name: "{{ lookup('env', 'PROJECT_NAME') }}-tfstate-bucket-{{ lookup('env', 'AWS_REGION') }}-{{ lookup('env', 'IDENTIFIER') }}"
+        state: absent
+        region: "{{ lookup('env', 'AWS_REGION') }}"
+        profile: "{{ lookup('env', 'AWS_PROFILE') | default('default', true) }}"
+      register: s3_bucket
+
+    - name: Debug s3_bucket output
+      debug:
+        var: s3_bucket
