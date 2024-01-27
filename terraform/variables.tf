@@ -22,3 +22,8 @@ variable "awsRegion" {
 variable "tfstateBucket" {
   type = string
 }
+
+# 運用するドメイン名を設定
+variable "domainName" {
+  type = string
+}
