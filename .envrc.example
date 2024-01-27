@@ -42,4 +42,15 @@ export TF_VAR_AWS_IAM_USER=$AWS_IAM_USER
 export TF_VAR_awsRegion=$AWS_REGION
 export TF_VAR_tfstateBucket=$TFSTATE_BUCKET
 
+# Terraform CLI のオプションとして自動的に読み込まれる環境変数
 
+# init コマンドで自動的にバックエンドを初期化するためのオプション
+export TF_CLI_ARGS_init=""
+# S3 Bucket 名を指定
+export TF_CLI_ARGS_init="$TF_CLI_ARGS_init -backend-config=bucket=$TFSTATE_BUCKET"
+# S3 Bucket のリージョンを指定
+export TF_CLI_ARGS_init="$TF_CLI_ARGS_init -backend-config=region=$AWS_REGION"
+# バックエンドのキー(保存先のパス)を指定
+export TF_CLI_ARGS_init="$TF_CLI_ARGS_init -backend-config=key=$PROJECT_NAME/$ENVIRONMENT/terraform.tfstate"
+# 利用するAWSプロファイルを指定
+export TF_CLI_ARGS_init="$TF_CLI_ARGS_init -backend-config=profile=$AWS_PROFILE"
