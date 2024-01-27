@@ -21,6 +21,10 @@ resource "aws_lb" "alb" {
 
   tags = {
     Name        = "${var.projectName}-${var.environment}-alb"
+    project     = "${var.projectName}"
+    Environment = "${var.environment}"
+  }
+}
     Environment = "${var.environment}"
   }
 }
