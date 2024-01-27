@@ -54,3 +54,9 @@ variable "key_name" {
 variable "public_key" {
   type = string
 }
+
+# EC2インスタンスに設定するインスタンスプロフィール名を指定
+# インスタンスプロフィールを介して、EC2インスタンスにIAM Roleをアタッチする
+variable "instance_profile_name" {
+  type = string
+}

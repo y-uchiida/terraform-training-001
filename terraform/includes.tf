@@ -24,6 +24,8 @@ module "app_server" {
   key_name = module.app_server_key_pair.key_name
   # 公開鍵
   public_key = module.app_server_key_pair.public_key_pem
+  # インスタンスプロフィール名
+  instance_profile_name = aws_iam_instance_profile.app_iam_instance_profile.name
 }
 
 # ----- bastion の作成 ---- #

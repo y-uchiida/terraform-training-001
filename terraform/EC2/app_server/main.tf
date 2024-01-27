@@ -28,6 +28,9 @@ resource "aws_instance" "app_server" {
   # インスタンスのキーペアを設定
   key_name = var.key_name
 
+  # インスタンスに設定するインスタンスプロフィール名を設定
+  iam_instance_profile = var.instance_profile_name
+
   # インスタンスのタグを設定
   tags = {
     Name        = "${var.projectName}-${var.environment}-app-ec2"
