@@ -25,6 +25,27 @@ resource "aws_lb" "alb" {
     Environment = "${var.environment}"
   }
 }
+
+# ALB に紐づくターゲットグループを設定する
+# ターゲットグループにEC2インスタンスなどのリソースを登録することで、
+# ロードバランシングの対象とすることができる
+resource "aws_lb_target_group" "targetGroup" {
+  name     = "${var.projectName}-${var.environment}-app-tg"
+  port     = 3000
+  protocol = "HTTP"
+  vpc_id   = aws_vpc.vpc.id
+
+  tags = {
+    Name        = "${var.projectName}-${var.environment}-app-tg"
+    project     = "${var.projectName}"
     Environment = "${var.environment}"
   }
+}
+
+# ターゲットグループに紐づくリソースを設定する
+# ここではEC2インスタンスをターゲットとして登録する
+resource "aws_lb_target_group_attachment" "targetGroupAttachment" {
+  target_group_arn = aws_lb_target_group.targetGroup.arn
+  target_id        = module.app_server.app_server_id
+  port             = 3000
 }
