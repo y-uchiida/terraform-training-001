@@ -26,6 +26,20 @@ resource "aws_lb" "alb" {
   }
 }
 
+# ALB に紐づくリスナーを設定する
+# リスナーはロードバランサーに対してリクエストを受け付けるポートを設定する
+# ここでは80番ポートでHTTPリクエストを受け付けるように設定している
+resource "aws_lb_listener" "listener_http" {
+  load_balancer_arn = aws_lb.alb.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.targetGroup.arn
+  }
+}
+
 # ALB に紐づくターゲットグループを設定する
 # ターゲットグループにEC2インスタンスなどのリソースを登録することで、
 # ロードバランシングの対象とすることができる
