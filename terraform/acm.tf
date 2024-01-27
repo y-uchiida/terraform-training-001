@@ -23,3 +23,33 @@ resource "aws_acm_certificate" "ap-northeast-1_certificate" {
     aws_route53_zone.route53_zone,
   ]
 }
+
+# ap-northeast-1(tokyo)リージョン用の証明書を検証するためのレコードを設定
+resource "aws_route53_record" "ap-northeast-1_certificate_validation" {
+  # domain_validation_options に設定したドメイン名のレコードを設定
+  # for_each を利用して、複数のレコードを設定する
+  for_each = {
+    for dvo in aws_acm_certificate.ap-northeast-1_certificate.domain_validation_options :
+    dvo.domain_name => {
+      name    = dvo.resource_record_name
+      type    = dvo.resource_record_type
+      records = [dvo.resource_record_value]
+    }
+  }
+
+  zone_id = aws_route53_zone.route53_zone.zone_id
+  name    = each.value.name
+  type    = each.value.type
+  ttl     = 600
+  records = each.value.records
+
+  # allow_orverwrite を true に設定すると、
+  # 既存のレコードを上書きする
+  allow_overwrite = true
+}
+
+# 証明書の検証を行う
+resource "aws_acm_certificate_validation" "ap-northeast-1_certificate_validation" {
+  certificate_arn         = aws_acm_certificate.ap-northeast-1_certificate.arn
+  validation_record_fqdns = [for record in aws_route53_record.ap-northeast-1_certificate_validation : record.fqdn]
+}
